@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children, rol }) => {
   // Mientras preguntamos quien es el usuario no sabemos si tiene permiso.
   // Sin este paso, al recargar la pagina mandariamos al login a alguien que
   // en realidad tenia la sesion abierta.
-  if (cargando) return <Loader texto="Verificando tu sesion" />
+  if (cargando) return <Loader texto="Verificando tu sesión" />
 
   if (!user) {
     // Guardamos de donde venia para volver ahi despues de loguearse.

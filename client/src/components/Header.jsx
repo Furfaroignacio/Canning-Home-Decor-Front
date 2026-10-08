@@ -1,8 +1,10 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 
 const Header = () => {
   const { user, esAdmin, estaLogueado, logout } = useAuth()
+  const { unidades } = useCart()
   const navigate = useNavigate()
 
   const cerrarSesion = () => {
@@ -20,7 +22,11 @@ const Header = () => {
 
         <nav className="nav" aria-label="Principal">
           <NavLink to="/" end className="nav__link">
-            Catalogo
+            Inicio
+          </NavLink>
+
+          <NavLink to="/catalogo" className="nav__link">
+            Catálogo
           </NavLink>
 
           {/* El carrito y las compras solo tienen sentido con sesion */}
@@ -28,6 +34,7 @@ const Header = () => {
             <>
               <NavLink to="/carrito" className="nav__link">
                 Carrito
+                {unidades > 0 && <span className="globo">{unidades}</span>}
               </NavLink>
               <NavLink to="/mis-compras" className="nav__link">
                 Mis compras
@@ -41,7 +48,7 @@ const Header = () => {
                 Productos
               </NavLink>
               <NavLink to="/admin/categorias" className="nav__link">
-                Categorias
+                Categorías
               </NavLink>
               <NavLink to="/admin/usuarios" className="nav__link">
                 Usuarios
@@ -55,7 +62,7 @@ const Header = () => {
             <>
               <span className="sesion__nombre">{user.name}</span>
               <button type="button" className="boton boton--texto" onClick={cerrarSesion}>
-                Cerrar sesion
+                Cerrar sesión
               </button>
             </>
           ) : (

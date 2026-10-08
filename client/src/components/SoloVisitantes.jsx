@@ -7,7 +7,7 @@ import Loader from './Loader'
 const SoloVisitantes = ({ children }) => {
   const { estaLogueado, cargando } = useAuth()
 
-  if (cargando) return <Loader texto="Verificando tu sesion" />
+  if (cargando) return <Loader texto="Verificando tu sesión" />
   if (estaLogueado) return <Navigate to="/" replace />
 
   return children

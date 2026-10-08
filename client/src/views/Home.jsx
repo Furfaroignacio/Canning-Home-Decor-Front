@@ -1,79 +1,91 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import * as productosApi from '../api/products'
+import * as categoriasApi from '../api/categories'
+import ProductoCard from '../components/ProductoCard'
 
-// Pantalla provisoria: ocupa el lugar del catalogo hasta que lo armemos.
-// Es publica, asi que tiene que funcionar con y sin sesion iniciada.
-const PENDIENTES_VISITANTE = [
-  ['Catalogo', 'Grilla de productos con filtros por categoria, precio y texto.'],
-  ['Detalle de producto', 'Fotos, descripcion y precio con descuento aplicado.'],
-]
-
-const PENDIENTES_COMPRADOR = [
-  ['Catalogo', 'Grilla de productos con filtros por categoria, precio y texto.'],
-  ['Detalle de producto', 'Fotos, descripcion, precio y boton de agregar al carrito.'],
-  ['Carrito', 'Items, cantidades, total y confirmacion de compra.'],
-  ['Mis compras', 'Historial de ordenes con su detalle.'],
-]
-
-const PENDIENTES_ADMIN = [
-  ['Productos', 'Listado, alta, edicion, stock y baja.'],
-  ['Categorias', 'Alta, edicion y baja.'],
-  ['Usuarios', 'Listado, cambio de rol y baja de cuentas.'],
-]
+const CUANTAS_DESTACADAS = 4
 
 const Home = () => {
-  const { user, esAdmin, estaLogueado } = useAuth()
+  const [categorias, setCategorias] = useState([])
+  const [productos, setProductos] = useState([])
 
-  let pendientes = PENDIENTES_VISITANTE
-  if (esAdmin) pendientes = PENDIENTES_ADMIN
-  else if (estaLogueado) pendientes = PENDIENTES_COMPRADOR
+  // Una sola consulta de cada cosa, al entrar. El home no cambia mientras
+  // lo mirás, asi que no hay nada que volver a pedir.
+  useEffect(() => {
+    let cancelado = false
+
+    Promise.all([categoriasApi.listar(), productosApi.listar({ size: 40 })])
+      .then(([respuestaCategorias, respuestaProductos]) => {
+        if (cancelado) return
+        setCategorias(respuestaCategorias.content ?? [])
+        setProductos(respuestaProductos.content ?? [])
+      })
+      .catch(() => {
+        // El home no deja de funcionar si la API falla: muestra la portada
+        // y los enlaces, sin las piezas.
+        if (!cancelado) {
+          setCategorias([])
+          setProductos([])
+        }
+      })
+
+    return () => {
+      cancelado = true
+    }
+  }, [])
+
+  // Se deducen de lo que ya trajimos. Ni estado ni efecto aparte.
+  const conDescuento = productos
+    .filter((p) => p.discount > 0 && p.available)
+    .slice(0, CUANTAS_DESTACADAS)
 
   return (
-    <div className="pagina">
-      <h1 className="titulo titulo--grande">
-        {estaLogueado ? `Hola, ${user.name}` : 'Canning Home Decor'}
-      </h1>
+    <div className="home">
+      <section className="portada">
+        <h1 className="portada__titulo">
+          Muebles para una casa
+          <br />
+          que se usa
+        </h1>
+        <p className="portada__bajada">
+          Sillones, mesas, iluminación y objetos elegidos de a uno.
+        </p>
+        <Link to="/catalogo" className="boton boton--claro">
+          Ver el catálogo
+        </Link>
+      </section>
 
-      {estaLogueado ? (
-        <p className="parrafo">
-          La base del proyecto esta funcionando: la sesion se guarda, el token
-          viaja en cada pedido y la API nos reconocio como{' '}
-          <strong>{esAdmin ? 'administrador' : 'comprador'}</strong>.
-        </p>
-      ) : (
-        <p className="parrafo">
-          Estas viendo la tienda sin iniciar sesion, igual que cualquier
-          visitante. Para comprar hace falta <Link to="/login">entrar</Link> o{' '}
-          <Link to="/registro">crear una cuenta</Link>.
-        </p>
+      {categorias.length > 0 && (
+        <section className="bloque">
+          <h2 className="bloque__titulo">Por dónde empezar</h2>
+          <ul className="indice">
+            {categorias.map((categoria) => (
+              <li key={categoria.id}>
+                <Link to={`/catalogo?categoria=${categoria.id}`} className="indice__link">
+                  {categoria.description}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
-      {estaLogueado && (
-        <dl className="ficha">
-          <div className="ficha__fila">
-            <dt>Usuario</dt>
-            <dd>{user.username}</dd>
+      {conDescuento.length > 0 && (
+        <section className="bloque">
+          <div className="bloque__encabezado">
+            <h2 className="bloque__titulo">Con descuento</h2>
+            <Link to="/catalogo" className="bloque__mas">
+              Ver todo el catálogo
+            </Link>
           </div>
-          <div className="ficha__fila">
-            <dt>Email</dt>
-            <dd>{user.email}</dd>
+          <div className="grilla">
+            {conDescuento.map((producto) => (
+              <ProductoCard key={producto.id} producto={producto} />
+            ))}
           </div>
-          <div className="ficha__fila">
-            <dt>Rol</dt>
-            <dd>{user.role}</dd>
-          </div>
-        </dl>
+        </section>
       )}
-
-      <h2 className="titulo titulo--chico">Lo que viene</h2>
-      <ul className="lista-pendientes">
-        {pendientes.map(([nombre, detalle]) => (
-          <li key={nombre} className="pendiente">
-            <span className="pendiente__nombre">{nombre}</span>
-            <span className="pendiente__detalle">{detalle}</span>
-          </li>
-        ))}
-      </ul>
     </div>
   )
 }

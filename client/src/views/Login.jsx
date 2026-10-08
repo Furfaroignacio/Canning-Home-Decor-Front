@@ -47,7 +47,7 @@ const Login = () => {
         <div className="acceso__caja">
           <h1 className="titulo">Entrar</h1>
           <p className="parrafo-guia">
-            Usa el mismo mail con el que creaste tu cuenta.
+            Usá el mismo mail con el que creaste tu cuenta.
           </p>
 
           <form onSubmit={manejarEnvio} noValidate>
@@ -93,7 +93,7 @@ const Login = () => {
           </form>
 
           <p className="parrafo-guia">
-            ¿Todavia no tenes cuenta? <Link to="/registro">Crear una</Link>
+            ¿Todavía no tenés cuenta? <Link to="/registro">Crear una</Link>
           </p>
         </div>
       </section>

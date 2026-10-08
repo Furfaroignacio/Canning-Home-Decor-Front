@@ -165,7 +165,7 @@ a:hover {
 
 .boton:disabled {
   opacity: 0.55;
-  cursor: progress;
+  cursor: not-allowed;
 }
 
 .boton--principal {
@@ -587,5 +587,904 @@ a:hover {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   Catalogo
+   ============================================================
+
+   Las piezas no van en tarjetas. Se apoyan sobre el fondo y lo unico
+   que las separa de sus datos es una linea, que queda alineada con la
+   de las piezas vecinas. Ese ritmo horizontal es el de un catalogo
+   impreso de muebleria, y es lo que evita el aspecto de grilla de
+   tarjetas identicas con sombra.
+
+   Las lineas tienen jerarquia: la del titulo es oscura, la de los
+   filtros es gris. El grosor dice que una manda sobre la otra.
+   ============================================================ */
+
+.catalogo__encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e-4);
+  padding-bottom: var(--e-3);
+  border-bottom: 1px solid var(--tinta);
+}
+
+.catalogo__titulo {
+  font-size: var(--t-3xl);
+  font-weight: 800;
+  font-stretch: 120%;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.catalogo__conteo {
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+  white-space: nowrap;
+}
+
+/* ---------- Barra de filtros ---------- */
+
+.filtros {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--e-4);
+  padding: var(--e-3) 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.filtros__categorias {
+  display: flex;
+  gap: var(--e-5);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filtros__categorias::-webkit-scrollbar {
+  display: none;
+}
+
+.filtro-cat {
+  padding: var(--e-1) 0;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.filtro-cat:hover {
+  color: var(--tinta);
+}
+
+.filtro-cat--activo {
+  border-bottom-color: var(--petroleo);
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.filtros__controles {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+}
+
+.busqueda__control {
+  width: 15rem;
+  padding: 0.45rem 0.7rem;
+  font-size: var(--t-sm);
+}
+
+.rango {
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+}
+
+.rango__control {
+  width: 6.5rem;
+  padding: 0.45rem 0.6rem;
+  font-size: var(--t-sm);
+}
+
+/* La rayita entre los dos campos dice "de aca hasta aca" sin palabras. */
+.rango__union {
+  width: 10px;
+  height: 1px;
+  background: var(--tinta-suave);
+}
+
+/* ---------- Grilla ----------
+   Columnas apretadas y filas generosas, como en un catalogo impreso. */
+
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  column-gap: var(--e-5);
+  row-gap: var(--e-7);
+  margin-top: var(--e-6);
+}
+
+/* ---------- Una pieza ---------- */
+
+.pieza__marco {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #e7eae9;
+}
+
+.pieza__foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pieza__sin-foto {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    135deg,
+    #e7eae9,
+    #e7eae9 10px,
+    #e1e5e4 10px,
+    #e1e5e4 20px
+  );
+}
+
+.pieza__descuento {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.2rem 0.5rem;
+  background: var(--bronce);
+  color: #fff;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pieza__agotado {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.93);
+  color: var(--tinta);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  text-align: center;
+}
+
+.pieza--agotada .pieza__foto {
+  filter: grayscale(1);
+  opacity: 0.75;
+}
+
+.pieza--agotada .pieza__precio {
+  color: var(--tinta-suave);
+}
+
+.pieza__datos {
+  margin-top: var(--e-3);
+  padding-top: var(--e-3);
+  border-top: 1px solid var(--linea);
+}
+
+.pieza__nombre {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: 2.6em;
+  font-size: var(--t-base);
+  font-weight: 600;
+  font-stretch: 106%;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.pieza__precios {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+  margin-top: var(--e-2);
+}
+
+.pieza__precio {
+  color: var(--bronce);
+  font-size: var(--t-lg);
+  font-weight: 700;
+  font-stretch: 104%;
+}
+
+.pieza__precio-lista {
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+  text-decoration: line-through;
+}
+
+/* ---------- Esqueleto de carga ---------- */
+
+.pieza--fantasma .pieza__marco,
+.fantasma {
+  animation: respirar 1.4s ease-in-out infinite;
+}
+
+.fantasma {
+  display: block;
+  height: 0.85rem;
+  background: var(--linea);
+}
+
+.fantasma--titulo {
+  width: 78%;
+  margin-bottom: var(--e-2);
+}
+
+.fantasma--precio {
+  width: 42%;
+}
+
+@keyframes respirar {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ---------- Sin resultados ---------- */
+
+.vacio {
+  max-width: 42ch;
+  margin: 0 auto;
+  padding: var(--e-8) 0;
+  text-align: center;
+}
+
+.vacio__titulo {
+  font-size: var(--t-lg);
+  font-weight: 700;
+  font-stretch: 110%;
+}
+
+.vacio__texto {
+  margin: var(--e-2) 0 var(--e-5);
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+}
+
+/* ---------- Paginador ---------- */
+
+.paginador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-5);
+  margin-top: var(--e-8);
+  padding-top: var(--e-5);
+  border-top: 1px solid var(--linea);
+}
+
+.paginador__posicion {
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+}
+
+/* ---------- Etiquetas solo para lectores de pantalla ---------- */
+
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Telefono ---------- */
+
+@media (max-width: 760px) {
+  .catalogo__titulo {
+    font-size: var(--t-2xl);
+  }
+
+  .filtros {
+    align-items: stretch;
+    flex-direction: column;
+    gap: var(--e-3);
+  }
+
+  .filtros__controles {
+    flex-wrap: wrap;
+  }
+
+  .busqueda {
+    flex: 1 1 100%;
+  }
+
+  .busqueda__control {
+    width: 100%;
+  }
+
+  .rango__control {
+    width: 5.5rem;
+  }
+
+  .grilla {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    column-gap: var(--e-4);
+    row-gap: var(--e-6);
+  }
+}
+
+/* ============================================================
+   Detalle de una pieza y carrito
+   ============================================================ */
+
+/* Ahora que la pieza lleva a su ficha, la linea avisa que se puede
+   hacer click. Es el unico estado de hover de la grilla. */
+.pieza__enlace {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pieza__enlace:hover .pieza__datos {
+  border-top-color: var(--petroleo);
+}
+
+.pieza__enlace:hover .pieza__nombre {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Numerito del carrito en el header ---------- */
+
+.globo {
+  display: inline-block;
+  min-width: 1.15rem;
+  margin-left: var(--e-1);
+  padding: 0 0.3rem;
+  background: var(--petroleo);
+  color: #fff;
+  font-size: var(--t-xs);
+  font-weight: 700;
+  line-height: 1.15rem;
+  text-align: center;
+}
+
+/* ---------- Donde estas ---------- */
+
+.miga {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  font-size: var(--t-sm);
+}
+
+.miga a {
+  color: var(--tinta-suave);
+  text-decoration: none;
+}
+
+.miga a:hover {
+  color: var(--tinta);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Una rayita vertical en lugar del punto del medio */
+.miga__union {
+  width: 1px;
+  height: 0.8rem;
+  background: var(--linea);
+}
+
+/* ---------- Detalle ---------- */
+
+.detalle__cuerpo {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: var(--e-7);
+  margin-top: var(--e-5);
+}
+
+.detalle__marco {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #e7eae9;
+}
+
+.detalle__foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detalle__marco--agotado .detalle__foto {
+  filter: grayscale(1);
+  opacity: 0.8;
+}
+
+.miniaturas {
+  display: flex;
+  gap: var(--e-2);
+  margin-top: var(--e-2);
+}
+
+.miniatura {
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: 1px solid var(--linea);
+  background: #e7eae9;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+
+.miniatura img,
+.miniatura span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.miniatura:hover {
+  border-color: var(--tinta-suave);
+}
+
+.miniatura--activa {
+  border-color: var(--petroleo);
+  border-width: 2px;
+}
+
+.detalle__nombre {
+  font-size: var(--t-2xl);
+  font-weight: 800;
+  font-stretch: 114%;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.detalle__precios {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--e-3);
+  margin-top: var(--e-4);
+  padding-bottom: var(--e-4);
+  border-bottom: 1px solid var(--linea);
+}
+
+.detalle__precio {
+  color: var(--bronce);
+  font-size: var(--t-2xl);
+  font-weight: 700;
+  font-stretch: 106%;
+  letter-spacing: -0.02em;
+}
+
+.detalle__precio-lista {
+  color: var(--tinta-suave);
+  font-size: var(--t-base);
+  text-decoration: line-through;
+}
+
+.detalle__ahorro {
+  padding: 0.15rem 0.4rem;
+  background: var(--bronce);
+  color: #fff;
+  font-size: var(--t-xs);
+  font-weight: 700;
+}
+
+.disponibilidad {
+  margin-top: var(--e-3);
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+}
+
+.disponibilidad--agotada {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.detalle__accion {
+  margin-top: var(--e-5);
+}
+
+/* El boton no necesita ocupar toda la columna */
+.detalle__accion .boton--principal {
+  max-width: 18rem;
+}
+
+.cantidad__control {
+  width: 5.5rem;
+}
+
+.nota {
+  margin-top: var(--e-3);
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+}
+
+.aviso--ok {
+  background: var(--petroleo-claro);
+  color: var(--petroleo-oscuro);
+}
+
+/* ---------- Carrito ---------- */
+
+.renglones {
+  margin-top: var(--e-5);
+  border-top: 1px solid var(--linea);
+}
+
+.renglon {
+  display: grid;
+  grid-template-columns: 76px 1fr auto auto auto;
+  align-items: center;
+  gap: var(--e-4);
+  padding: var(--e-4) 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.renglon__foto {
+  display: block;
+  width: 76px;
+  height: 76px;
+  overflow: hidden;
+  background: #e7eae9;
+}
+
+.renglon__foto img,
+.renglon__foto span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.renglon__nombre {
+  color: var(--tinta);
+  font-weight: 600;
+  font-stretch: 104%;
+  text-decoration: none;
+}
+
+.renglon__nombre:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.renglon__unitario {
+  margin-top: var(--e-1);
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+}
+
+.renglon__subtotal {
+  min-width: 7rem;
+  color: var(--bronce);
+  font-weight: 700;
+  font-stretch: 104%;
+  text-align: right;
+}
+
+.cierre {
+  display: flex;
+  align-items: center;
+  gap: var(--e-5);
+  margin-top: var(--e-5);
+}
+
+.cierre__total {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-3);
+  margin-left: auto;
+}
+
+.cierre__etiqueta {
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+}
+
+.cierre__monto {
+  color: var(--bronce);
+  font-size: var(--t-xl);
+  font-weight: 700;
+  font-stretch: 106%;
+}
+
+.cierre__comprar {
+  width: auto;
+  margin-top: 0;
+  padding-inline: var(--e-6);
+}
+
+/* ---------- Telefono ---------- */
+
+@media (max-width: 760px) {
+  .detalle__cuerpo {
+    grid-template-columns: 1fr;
+    gap: var(--e-5);
+  }
+
+  .detalle__nombre {
+    font-size: var(--t-xl);
+  }
+
+  .detalle__precio {
+    font-size: var(--t-xl);
+  }
+
+  .renglon {
+    grid-template-columns: 64px 1fr auto;
+    row-gap: var(--e-2);
+  }
+
+  .renglon__foto {
+    width: 64px;
+    height: 64px;
+  }
+
+  .renglon__cuerpo {
+    grid-column: 2 / -1;
+  }
+
+  .renglon__cantidad {
+    grid-column: 2;
+  }
+
+  .renglon__subtotal {
+    min-width: 0;
+    grid-column: 3;
+  }
+
+  .renglon .boton--texto {
+    grid-column: 2 / -1;
+    justify-self: start;
+  }
+
+  .cierre {
+    flex-wrap: wrap;
+  }
+
+  .cierre__comprar {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   Home y Mis compras
+   ============================================================ */
+
+/* ---------- Portada ---------- */
+
+.portada {
+  padding: var(--e-8) var(--e-6);
+  background: var(--petroleo);
+  color: #fff;
+}
+
+.portada__titulo {
+  max-width: 16ch;
+  font-size: var(--t-4xl);
+  font-weight: 800;
+  font-stretch: 120%;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.portada__bajada {
+  max-width: 44ch;
+  margin-top: var(--e-4);
+  color: var(--petroleo-claro);
+  font-size: var(--t-lg);
+  line-height: 1.4;
+}
+
+/* Sobre el paño de color el boton se invierte */
+.boton--claro {
+  margin-top: var(--e-6);
+  background: #fff;
+  color: var(--petroleo-oscuro);
+  text-decoration: none;
+}
+
+.boton--claro:hover {
+  background: var(--petroleo-claro);
+}
+
+/* ---------- Bloques del home ---------- */
+
+.bloque {
+  margin-top: var(--e-8);
+}
+
+.bloque__encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e-4);
+}
+
+.bloque__titulo {
+  padding-bottom: var(--e-3);
+  border-bottom: 1px solid var(--tinta);
+  font-size: var(--t-xl);
+  font-weight: 700;
+  font-stretch: 112%;
+  letter-spacing: -0.02em;
+}
+
+.bloque__encabezado .bloque__titulo {
+  flex: 1;
+}
+
+.bloque__mas {
+  padding-bottom: var(--e-3);
+  border-bottom: 1px solid var(--tinta);
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.bloque__mas:hover {
+  color: var(--tinta);
+}
+
+/* ---------- Indice de categorias ----------
+   Lista de secciones, como el indice de un catalogo impreso. */
+
+.indice {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  column-gap: var(--e-6);
+}
+
+.indice__link {
+  display: block;
+  padding: var(--e-4) 0;
+  border-bottom: 1px solid var(--linea);
+  color: var(--tinta);
+  font-size: var(--t-lg);
+  font-weight: 600;
+  font-stretch: 110%;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.indice__link:hover {
+  border-bottom-color: var(--petroleo);
+  color: var(--petroleo);
+}
+
+/* ---------- Mis compras ---------- */
+
+.orden {
+  margin-top: var(--e-6);
+  border-top: 1px solid var(--tinta);
+}
+
+.orden__encabezado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e-4);
+  padding: var(--e-3) 0;
+}
+
+.orden__numero {
+  font-size: var(--t-lg);
+  font-weight: 700;
+  font-stretch: 110%;
+  letter-spacing: -0.015em;
+}
+
+.orden__fecha {
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+}
+
+.orden__total {
+  color: var(--bronce);
+  font-size: var(--t-lg);
+  font-weight: 700;
+  font-stretch: 104%;
+  white-space: nowrap;
+}
+
+.orden__item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  gap: var(--e-4);
+  padding: var(--e-3) 0;
+  border-top: 1px solid var(--linea);
+}
+
+.orden__pieza {
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.orden__pieza:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.orden__cantidad {
+  color: var(--tinta-suave);
+  font-size: var(--t-sm);
+  white-space: nowrap;
+}
+
+.orden__subtotal {
+  min-width: 7rem;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ---------- Telefono ---------- */
+
+@media (max-width: 760px) {
+  .portada {
+    padding: var(--e-6) var(--e-4);
+  }
+
+  .portada__titulo {
+    font-size: var(--t-2xl);
+  }
+
+  .portada__bajada {
+    font-size: var(--t-base);
+  }
+
+  .boton--claro {
+    width: 100%;
+  }
+
+  .indice {
+    grid-template-columns: 1fr;
+  }
+
+  .orden__item {
+    grid-template-columns: 1fr auto;
+    row-gap: var(--e-1);
+  }
+
+  .orden__cantidad {
+    grid-column: 1;
+  }
+
+  .orden__subtotal {
+    min-width: 0;
+    grid-row: 2;
+    grid-column: 2;
   }
 }

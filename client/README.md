@@ -89,11 +89,36 @@ En el código eso lo resuelven dos componentes: `ProtectedRoute` exige sesión
 (y opcionalmente un rol), y `SoloVisitantes` evita que alguien ya logueado
 vuelva a ver el login.
 
+## Las imágenes
+
+La base no guarda archivos: guarda direcciones. La tabla `product_images`
+tiene una fila por foto con el `product_id` y la `url`, y la API las devuelve
+en `imageUrls`. El navegador va a buscar cada foto directo a esa dirección,
+sin pasar por Spring.
+
+Para usar fotos propias, lo más simple es ponerlas en `public/img/` y guardar
+rutas relativas en la base (`/img/sillon-pana.jpg`). Vite las sirve y
+funciona igual en desarrollo que en el build.
+
+Si una foto no carga, el componente la reemplaza por un panel neutro en lugar
+de dejar el ícono de imagen rota.
+
 ## Estado actual
 
-Listo: estructura, capa de API completa, sesión con JWT, rutas públicas y
-protegidas, login y registro.
+Listo: estructura, capa de API, sesión con JWT, rutas públicas y protegidas,
+login, registro, home, catálogo con filtros, detalle de producto, carrito con
+checkout e historial de compras.
 
-Pendiente: catálogo, detalle de producto, carrito, checkout, historial de
-compras y el panel de administración. Los lugares donde van las rutas están
+Pendiente: el panel de administración. Los lugares donde van esas rutas están
 marcados con un comentario en `src/App.jsx`.
+
+## Rutas
+
+| Ruta | Quién entra |
+|---|---|
+| `/` | todos — portada, categorías y piezas con descuento |
+| `/catalogo` | todos — grilla con filtros, acepta `?categoria=N` |
+| `/productos/:id` | todos |
+| `/carrito` | comprador |
+| `/mis-compras` | comprador |
+| `/login`, `/registro` | solo sin sesión iniciada |

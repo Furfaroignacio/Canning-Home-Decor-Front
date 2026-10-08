@@ -36,7 +36,7 @@ const Register = () => {
     } catch (fallo) {
       setError(
         fallo.status === 500
-          ? 'Ese email o nombre de usuario ya esta en uso.'
+          ? 'Ese email o nombre de usuario ya está en uso.'
           : fallo.message
       )
     } finally {
@@ -150,7 +150,7 @@ const Register = () => {
           </form>
 
           <p className="parrafo-guia">
-            ¿Ya tenes cuenta? <Link to="/login">Entrar</Link>
+            ¿Ya tenés cuenta? <Link to="/login">Entrar</Link>
           </p>
         </div>
       </section>

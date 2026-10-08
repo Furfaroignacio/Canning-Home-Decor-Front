@@ -22,10 +22,10 @@ export class ApiError extends Error {
 }
 
 const DEFAULT_MESSAGES = {
-  0: 'No se pudo conectar con el servidor. Fijate que la API este levantada.',
-  400: 'Los datos enviados no son validos.',
-  401: 'Tu sesion expiro. Volve a iniciar sesion.',
-  403: 'No tenes permiso para hacer esto.',
+  0: 'No se pudo conectar con el servidor. Fijate que la API esté levantada.',
+  400: 'Los datos enviados no son válidos.',
+  401: 'Tu sesión expiró. Volvé a iniciar sesión.',
+  403: 'No tenés permiso para hacer esto.',
   404: 'No encontramos lo que buscabas.',
   409: 'Ese registro ya existe.',
   500: 'La API tuvo un error inesperado.',
